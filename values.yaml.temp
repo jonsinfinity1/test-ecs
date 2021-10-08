@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: microservice-deployment
+  labels:
+    app: test-ecs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-ecs
+  template:
+    metadata:
+      labels:
+        app: test-ecs
+    spec:
+      containers:
+        - name: test-ecs-container
+          image: 909857523496.dkr.ecr.us-west-2.amazonaws.com/test-ecs:latest
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-ecs-service
+spec:
+  #Creating a service of type load balancer. Load balancer gets created but takes time to reflect
+  type: LoadBalancer
+  selector:
+    app: test-ecs
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
